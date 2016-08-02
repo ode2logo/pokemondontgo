@@ -1,0 +1,215 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+<meta name="description" content="Index Pokémon: PLIS don't GO!">
+<meta name="keywords" content="PokemonGo, pokemon, go, argentina, latinoamerica, cuando llega pokemon go">
+<meta name="author" content="ode2logo | Emiliano Pujol">
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width, height=device-height">
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyB0Scu9qFcbDn5mk3pSItJv6pL5W-TRHCE" type="text/javascript"></script>
+<link rel="shortcut icon" href="favicon.png">
+<link rel="icon" href="favicon.png">
+<link rel="favicon" href="favicon.png">
+<!--<LINK rel="StyleSheet" href="style.css?ra=1" type="text/css">
+<LINK rel="StyleSheet" href="jquery.alerts.css" type="text/css">
+<LINK rel="StyleSheet" href="jquery.ui.css" type="text/css">-->
+<title>Pokémon Dont Go</title>
+<script>
+var introanimar=false;
+var idventana=0;
+var map;
+var arrPokes=[];
+var pids=0;
+var step=0;
+var radius;
+var avatar;
+var error;
+var canvas;
+
+//$(window).load(function ()
+$(document).ready(function () {
+    if (navigator.geolocation) {
+        if (!navigator.geolocation.watchPosition)
+            navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
+        else
+            navigator.geolocation.watchPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
+    } else {
+        showError("Please, I need know WHERE are you. MUAHAHAHA");
+    }
+    radius=$("#radius");
+    avatar=$("#avatar");
+    error=$("#error");
+    canvas=$("#canvas");
+    setInterval(loop,500);
+    inicializarMapa([37,37]);
+    canvas.on("click",click);
+});
+
+function showPosition(pos) {
+    if (!map)
+        inicializarMapa([pos.coords.latitude,pos.coords.longitude]);
+    else {
+        var latlng = new google.maps.LatLng(pos.coords.latitude,pos.coords.longitude);
+        map.setCenter(latlng);
+    }
+    if (!navigator.geolocation.watchPosition)
+        navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
+}
+
+function loop() {
+    if (step%10==0) {
+        radius.css({backgroundSize:'5%'}).animate({backgroundSize:'45%'},3000);
+    }
+    var r=rand(0,50);
+    if (r<=2) {
+        avatar.css({backgroundImage:"url("+(r==2?"avatar_r.png":"avatar_l.png")+")"});
+    }
+    if (map&&step>10) {
+        checkPokes();
+    }
+    step++;
+}
+
+function click(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (!map)
+        return;
+    var selfPos=map.getCenter();
+    arrPokes.sort(function(a,b){return getDist(selfPos,a.getPosition())-getDist(selfPos,b.getPosition());});
+    if (getDist(selfPos,arrPokes[0].getPosition())>0.0003) {
+        showError("Too far to catch");
+    } else {
+        location.href="battle.html#"+arrPokes[0].ref;
+    }
+}
+
+function rand(ini,fin) {
+    var d=fin-ini;
+    return (Math.round(ini+Math.random()*d));
+}
+
+function getDist(p1,p2) {
+    return (Math.sqrt(Math.pow(p1.lat()-p2.lat(),2)+Math.pow(p1.lng()-p2.lng(),2)))
+}
+/******************************API GOOGLE MAPS**********************************/
+function inicializarMapa(centrar) {
+	if ((centrar[0]==0)&&(centrar[1]==0)) {
+		return;
+	}
+	var latlng = new google.maps.LatLng(centrar[0],centrar[1]);
+	var tipo=google.maps.MapTypeId.ROADMAP;//google.maps.MapTypeId.HYBRID
+	var settings = {
+		zoom: 18,
+		center: latlng,
+        disableDefaultUI: true,
+		mapTypeControl: false,
+		mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+		navigationControl: false,
+		navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+		mapTypeId: tipo
+	};
+
+	map = new google.maps.Map(document.getElementById("divmapa"), settings);
+    step = 0;
+
+    inicializarPokes(centrar);
+}
+function checkPokes() {
+    var selfPos=map.getCenter();
+    for (var i=rand(0,5);i<arrPokes.length;i+=rand(1,5)) {
+        var dist=getDist(selfPos,arrPokes[i].getPosition());
+        if (dist<0.0005) {
+            runAway(arrPokes[i],selfPos);
+        } else if (dist>0.003) {
+            nuevoPoke([selfPos.lat(),selfPos.lng()]);
+            arrPokes=arrPokes.filter(function(v){return v.pid!=arrPokes[i].pid});
+        } else {
+            if (rand(0,5)==1)
+                chaseHuman(arrPokes[i],selfPos);
+        }
+    }
+}
+function isCerca(p1,p2) {
+    if (getDist(p1,p2)<0.0005) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function runAway(poke,center) {
+    var pos=poke.getPosition();
+    pos.lat=pos.lat();
+    pos.lng=pos.lng();
+    if (center.lat()>pos.lat) pos.lat-=rand(1,5)/100000;
+    else                          pos.lat+=rand(1,5)/100000;
+    if (center.lng()>pos.lng) pos.lng-=rand(1,5)/100000;
+    else                          pos.lng+=rand(1,5)/100000;
+    poke.setPosition(new google.maps.LatLng(pos.lat,pos.lng));
+}
+function chaseHuman(poke,center) {
+    var pos=poke.getPosition();
+    pos.lat=pos.lat();
+    pos.lng=pos.lng();
+    if (center.lat()>pos.lat) pos.lat+=rand(1,5)/100000;
+    else                          pos.lat-=rand(1,5)/100000;
+    if (center.lng()>pos.lng) pos.lng+=rand(1,5)/100000;
+    else                          pos.lng-=rand(1,5)/100000;
+    poke.setPosition(new google.maps.LatLng(pos.lat,pos.lng));
+}
+function inicializarPokes(centrar) {
+    var cant=rand(10,15);
+    for (var i=0;i<cant;i++) {
+        nuevoPoke(centrar);
+    }
+}
+function nuevoPoke(centrar) {
+    var ref = rand(1,151);
+    var img = new google.maps.MarkerImage("pokes/"+ref+".gif",
+        new google.maps.Size(50,50),
+        new google.maps.Point(0,0),
+        new google.maps.Point(25,50)
+    );
+    var pos = new google.maps.LatLng(centrar[0]+rand(-15,15)/10000,centrar[1]+rand(-15,15)/10000);
+    //var pos = new google.maps.LatLng(centrar[0]+0.0001,centrar[1]+0.0001);
+    var poke = new google.maps.Marker({
+          position: pos,
+          map: map,
+          title:'???',
+          pid: pids,
+          ref: ref,
+          icon: img
+    });
+    arrPokes.push(poke);
+    pids++;
+}
+function showError(txt) {
+    error.html(txt)
+        .slideDown(500)
+        .delay(3000)
+        .slideUp(500);
+}
+</script>
+<style>
+* {padding:0px;margin:0px}
+#divmapa {width:100%;height:100%;position:absolute;z-index:1;top:0px;left:0px;background-color:#08e;}
+#radius {width:100%;height:100%;position:absolute;z-index:5;top:0;left:0;
+        background-image:url(radius.png);background-repeat:no-repeat;background-size:40%;background-position:center;}
+#avatar {width:100%;height:100%;position:absolute;z-index:10;top:0;left:0;
+        background-image:url(avatar_r.png);background-repeat:no-repeat;background-size:40%;background-position:center;}
+#error {width:100%;color:#fff;position:absolute;z-index:15;top:0;left:0;display:none;
+        background-color:rgba(255,0,0,0.7);text-align:center;font-size:5vh;font-family:arial;padding:5vh 0;}
+#canvas {width:100%;height:100%;position:absolute;z-index:20;top:0px;left:0px;}
+</style>
+</head>
+<body>
+
+<div id='divmapa'></div>
+<div id='radius'></div>
+<div id='avatar'></div>
+<div id='error'></div>
+<canvas id='canvas'></canvas>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+<meta name="description" content="battle, Pokémon: PLIS don't GO!">
+<meta name="keywords" content="PokemonGo, pokemon, go, argentina, latinoamerica, cuando llega pokemon go">
+<meta name="author" content="ode2logo | Emiliano Pujol">
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width, height=device-height">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="icon" href="favicon.png">
+<link rel="favicon" href="favicon.png">
+<!--<LINK rel="StyleSheet" href="style.css?ra=1" type="text/css">
+<LINK rel="StyleSheet" href="jquery.alerts.css" type="text/css">
+<LINK rel="StyleSheet" href="jquery.ui.css" type="text/css">-->
+<title>Dont Go Battle</title>
+<script>
+var video;
+var error;
+var pokemon;
+var pokimg;
+
+//$(window).load(function ()
+$(document).ready(function () {
+
+    video=$("#video");
+    error=$("#error");
+    pokemon=$("#pokemon");
+    pokimg=$("#pokimg");
+
+    navigator.getMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+    navigator.getMedia (
+       {
+          video: true,
+          audio: false
+       },
+       function(localMediaStream) {
+          var vid = video[0];
+          vid.src = window.URL.createObjectURL(localMediaStream);
+          vid.onloadedmetadata = function(e) {
+              vid.play();
+          };
+       },
+       function(err) {
+           alert("Plis, share your Camera.");
+       }
+
+    );
+
+    pokimg.on("click",function () {alert("The Pokémon uses Teleport.");window.history.back()});
+    pokimg.on("load",function () {pokimg.css({top:'110%',left:rand(0,70)+'%'});relocatePokemon(0,0);});
+    pokimg.attr('src','pokes_front/'+location.hash.substr(1)+'.gif');
+    setInterval(function(){relocatePokemon(rand(-50,50),rand(-50,50))},5000);
+});
+
+function relocatePokemon(x,y) {
+    var wi=parseInt(video.css('width'));
+    var he=parseInt(video.css('height'));
+    var iwi=parseInt(pokimg.css('width'));
+    var ihe=parseInt(pokimg.css('height'));
+    var nx=wi/2-iwi/2+x;
+    var ny=he/2-ihe/2+y;
+    pokimg.animate({top:ny,left:nx},3000);
+}
+
+function rand(ini,fin) {
+    var d=fin-ini;
+    return (Math.round(ini+Math.random()*d));
+}
+
+</script>
+<style>
+* {padding:0px;margin:0px}
+#video {width:100%;height:100%;position:absolute;z-index:1;top:0px;left:0px;background-color:#222;}
+#error {width:100%;color:#fff;position:absolute;z-index:15;top:0;left:0;display:none;
+        background-color:rgba(255,0,0,0.7);text-align:center;font-size:5vh;font-family:arial;padding:5vh 0;}
+#pokemon {width:100%;height:100%;position:absolute;z-index:10;top:0;left:0;
+        -background-image:url();background-repeat:no-repeat;background-size:30%;background-position:center;}
+#pokimg {position:absolute;top:-40%;left:40%;width:25%;}
+</style>
+</head>
+<body>
+
+<video id='video'></video>
+<div id='error'></div>
+<div id='pokemon'>
+    <img id='pokimg' src=''/>
+</div>
+
+</body>
+</html>
