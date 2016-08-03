@@ -30,10 +30,10 @@ body {background-color:#222}
     position:absolute;
     padding: 3%;
     width:80%;
-    font-family: fantasy;
+    font-family: fantasy, arial;
 }
 hr { margin:5%; }
-button { margin:5%; font-size:5vh; padding: 1vh 3vh; }
+button { margin:5%; font-size:170%; padding: 1vh 3vh; }
 .screenshot { max-width: 100%; width:auto; }
 </style>
 </head>
@@ -41,6 +41,7 @@ button { margin:5%; font-size:5vh; padding: 1vh 3vh; }
 
 <div id='divwelcome'>
     <h3>Bienvenido!</h3>
+    <a name='top'></a>
     <p>Antes de continuar, te sugerimos que utilices Mozilla Firefox y habilites GPS/Servicios de Ubicación.</p>
     <p>Si no lo tienes, puedes descargarlo aquí:</p>
     <center>
@@ -64,7 +65,7 @@ button { margin:5%; font-size:5vh; padding: 1vh 3vh; }
     <hr>
     <h3>Si estás preparado</h3>
     Atrápalos si puedes. Pokémon don't go!
-    <center><button onclick="location.href='map.html';">Comenzar!</button></center>
+    <center><button onclick="if(navigator.userAgent.indexOf('Firefox')>=0){location.href='map.html'}else{alert('Por favor, ingresa a través de Mozilla Firefox, de otro modo no lo podrás disfrutar al 101%.');location.href='#top';};">Comenzar!</button></center>
 
     <hr>
     <h3>Acerca de PDG</h3>
@@ -72,6 +73,7 @@ button { margin:5%; font-size:5vh; padding: 1vh 3vh; }
     <p>No se guarda información personal ni se difunde, no obstante el usuario es responsable del uso que le quiera dar.</p>
     <p>Desarrollado por Emiliano Pujol, <i>ode2logo</i>.</p>
     <p>Contacto: <a href='mailto:enposadas@gmail.com'>enposadas@gmail.com</a> .</p>
+    <p>GitHub: <a href='https://github.com/ode2logo/pokemondontgo' target='_blank'>PokémonDontGO</a></p>
 </div>
 
 </body>
