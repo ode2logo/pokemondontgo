@@ -45,15 +45,15 @@ $(document).ready(function () {
           };
        },
        function(err) {
-           alert("Plis, share your Camera.");
+           alert("Por favor, activa tu cámara.");
        }
 
     );
 
-    pokimg.on("click",function () {alert("The Pokémon uses Teleport.");window.history.back()});
+    pokimg.on("click",function () {alert("El Pokémon ha escapado.");window.history.back()});
     pokimg.on("load",function () {pokimg.css({top:'110%',left:rand(0,70)+'%'});relocatePokemon(0,0);});
     pokimg.attr('src','pokes_front/'+location.hash.substr(1)+'.gif');
-    setInterval(function(){relocatePokemon(rand(-50,50),rand(-50,50))},5000);
+    setInterval(function(){relocatePokemon(rand(-100,100),rand(-100,100))},5000);
 });
 
 function relocatePokemon(x,y) {
@@ -63,7 +63,7 @@ function relocatePokemon(x,y) {
     var ihe=parseInt(pokimg.css('height'));
     var nx=wi/2-iwi/2+x;
     var ny=he/2-ihe/2+y;
-    pokimg.animate({top:ny,left:nx},3000);
+    pokimg.animate({top:ny,left:nx,width:rand(35,50)+"%"},3000);
 }
 
 function rand(ini,fin) {
@@ -77,9 +77,10 @@ function rand(ini,fin) {
 #video {width:100%;height:100%;position:absolute;z-index:1;top:0px;left:0px;background-color:#222;}
 #error {width:100%;color:#fff;position:absolute;z-index:15;top:0;left:0;display:none;
         background-color:rgba(255,0,0,0.7);text-align:center;font-size:5vh;font-family:arial;padding:5vh 0;}
-#pokemon {width:100%;height:100%;position:absolute;z-index:10;top:0;left:0;
-        -background-image:url();background-repeat:no-repeat;background-size:30%;background-position:center;}
-#pokimg {position:absolute;top:-40%;left:40%;width:25%;}
+#pokemon {width:100%;height:100%;position:absolute;z-index:10;top:0;left:0;overflow:hidden;
+        background-image:url();background-repeat:no-repeat;background-size:cover;background-position:center;}
+#pokimg {position:absolute;top:-40%;left:40%;width:40%;}
+#pokeball {position:absolute;bottom:-2%;left:40%;width:20%;}
 </style>
 </head>
 <body>
@@ -88,6 +89,7 @@ function rand(ini,fin) {
 <div id='error'></div>
 <div id='pokemon'>
     <img id='pokimg' src=''/>
+    <img id='pokeball' src='pokeball.png'/>
 </div>
 
 </body>

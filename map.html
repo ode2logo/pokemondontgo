@@ -30,19 +30,19 @@ var canvas;
 //$(window).load(function ()
 $(document).ready(function () {
     if (navigator.geolocation) {
-        if (!navigator.geolocation.watchPosition)
-            navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
-        else
-            navigator.geolocation.watchPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
-    } else {
-        showError("Please, I need know WHERE are you. MUAHAHAHA");
-    }
+        //if (!navigator.geolocation.watchPosition)
+            //navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("No se pudo obtener la ubicación GPS"+v.message)},{enableHighAccuracy:true});
+        //else
+            navigator.geolocation.watchPosition(showPosition,function(v){showError("No se pudo obtener la ubicación GPS")},{enableHighAccuracy:true});//*/
+    } else
+        showError("Disculpe, su navegador no soporta Geolocalización");
+
     radius=$("#radius");
     avatar=$("#avatar");
     error=$("#error");
     canvas=$("#canvas");
     setInterval(loop,500);
-    inicializarMapa([37,37]);
+    //inicializarMapa([-27.3667066,-55.8950995]);
     canvas.on("click",click);
 });
 
@@ -53,8 +53,8 @@ function showPosition(pos) {
         var latlng = new google.maps.LatLng(pos.coords.latitude,pos.coords.longitude);
         map.setCenter(latlng);
     }
-    if (!navigator.geolocation.watchPosition)
-        navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("Unable to get GPS Location")},{enableHighAccuracy: true});
+    //if (!navigator.geolocation.watchPosition)
+    //navigator.geolocation.getCurrentPosition(showPosition,function(v){showError("No se pudo obtener la ubicación GPS")},{enableHighAccuracy:true,timeout:10000});
 }
 
 function loop() {
@@ -79,8 +79,9 @@ function click(ev) {
     var selfPos=map.getCenter();
     arrPokes.sort(function(a,b){return getDist(selfPos,a.getPosition())-getDist(selfPos,b.getPosition());});
     if (getDist(selfPos,arrPokes[0].getPosition())>0.0003) {
-        showError("Too far to catch");
+        showError("Muy lejos para capturarlo");
     } else {
+        showError("Comienza una batalla...");
         location.href="battle.html#"+arrPokes[0].ref;
     }
 }
