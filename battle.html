@@ -5,7 +5,8 @@
 <meta name="description" content="battle, Pokémon: PLIS don't GO!">
 <meta name="keywords" content="PokemonGo, pokemon, go, argentina, latinoamerica, cuando llega pokemon go">
 <meta name="author" content="ode2logo | Emiliano Pujol">
-<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>-->
+<script src="jquery.js"></script>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width, height=device-height">
 <link rel="shortcut icon" href="favicon.png">
 <link rel="icon" href="favicon.png">
@@ -15,18 +16,41 @@
 <LINK rel="StyleSheet" href="jquery.ui.css" type="text/css">-->
 <title>Dont Go Battle</title>
 <script>
+var stepball=0;
 var video;
 var error;
 var pokemon;
+var xpoke=0;
+var ypoke=0;
+var zpoke=0;
 var pokimg;
+var pokeball;
+var drine=[];
+var stateball=0;
+var si;
+var xball=0;
+var yball=0;
+var zball=0;
+var bang=0;
+var xspd=0;
+var yspd=0;
+var bspd=0;
+var viwi;
+var vihe;
 
 //$(window).load(function ()
 $(document).ready(function () {
-
+    si=setInterval(checkBall,25);
     video=$("#video");
+    viwi=parseInt(video.css('width'));
+    vihe=parseInt(video.css('height'));
     error=$("#error");
     pokemon=$("#pokemon");
     pokimg=$("#pokimg");
+    pokeball=$("#pokeball");
+    piwi=pokeball[0].width;
+    pihe=pokeball[0].height;
+    drine=[];
 
     navigator.getMedia = ( navigator.getUserMedia ||
                        navigator.webkitGetUserMedia ||
@@ -45,25 +69,161 @@ $(document).ready(function () {
           };
        },
        function(err) {
-           alert("Por favor, activa tu cámara.");
+           //alert("Por favor, activa tu cámara.");
+           video.css({backgroundImage:'url(bgbat.png)',backgroundSize:'cover'});
        }
 
-    );
+   );//*/
 
-    pokimg.on("click",function () {alert("El Pokémon ha escapado.");window.history.back()});
-    pokimg.on("load",function () {pokimg.css({top:'110%',left:rand(0,70)+'%'});relocatePokemon(0,0);});
+    //pokimg.on("click",function () {alert("El Pokémon ha escapado.");window.history.back()});
+    fustart=function(){if(stateball<=2)relocatePokemon(rand(-100,100),rand(-50,50),rand(5,15))};
+    pokimg.on("load",function () {pokimg.css({top:'110%',left:rand(0,70)+'%'});fustart();});
     pokimg.attr('src','pokes_front/'+location.hash.substr(1)+'.gif');
-    setInterval(function(){relocatePokemon(rand(-100,100),rand(-100,100))},5000);
+    setInterval(fustart,15000);
+    pokeball[0].ontouchstart=function (ev) {
+    	if (stateball==0) {
+    		stateball=1;
+    	}
+    }
+    pokemon[0].ontouchmove=function (ev) {
+    	if (stateball==1) {
+    		pokeball.css({left:ev.touches[0].pageX-piwi/2,top:ev.touches[0].pageY-pihe/2});
+    		//console.log(drine);
+    		drine.push({ts:Date.now(),x:ev.touches[0].pageX,y:ev.touches[0].pageY});
+    		if (drine.length>5) {
+    			drine.shift();
+    		}
+    	}
+    }
+    pokemon[0].ontouchend=function (ev) {
+    	if (stateball==1) {
+    		stateball=2;
+            stepball=0;
+    		var draft={x0:0,y0:0,xi:0,yi:0};
+    		drine.forEach(function(v,i,arr) {
+    			if (i==0) {
+    				draft.x0=v.x;
+    				draft.y0=v.y;
+    			}
+    			if (i==arr.length-1) {
+    				draft.xi=v.x;
+    				draft.yi=v.y;
+    			}
+	    		var d=document.createElement("div");
+	    		d.className="dot";
+	    		pokemon[0].appendChild(d);
+	    		/*d.style.left=v.x;
+	    		d.style.top=v.y;*/
+	    		$(d).css({left:v.x,top:v.y});
+	    		//console.log(v.x+':'+v.y);
+	    		d.style.backgroundColor="rgb("+(Math.floor(255*i/arr.length))+",255,0)";
+	    	});
+            xspd=draft.x0-draft.xi;
+            yspd=draft.y0-draft.yi;
+            bspd=Math.sqrt(Math.pow(xspd,2)+Math.pow(yspd,2));
+            bang=Math.acos((draft.x0-draft.xi)/bspd);
+            xball=parseInt(pokeball.css('left'))-viwi/2+parseInt(pokeball.css('width'))/2;
+            yball=parseInt(pokeball.css('top'))-vihe/2+parseInt(pokeball.css('height'))/2;
+            zball=0;
+            console.log(draft,bang,bspd,xball,yball);
+    	}
+    }
+    pokemon[0].ontouchcancel=pokemon[0].ontouchend;
+    pokemon[0].oncontextmenu=function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
 });
 
-function relocatePokemon(x,y) {
-    var wi=parseInt(video.css('width'));
-    var he=parseInt(video.css('height'));
+function checkBall() {
+    if (stateball==2) {
+        var dy=yspd/9;
+        var dx=xspd/7;
+        stepball++;
+        xball-=dx;
+        yball-=dy;
+        if (zball<45) zball+=0.2;
+        xspd*=0.9;
+        yspd-=13;
+        relocatePokeball(xball,yball,zball);
+        if (yspd<0&&stepball>30) {
+            if (yball>vihe/3) {
+                stateball=9;
+                //alert("Fail Poke...");
+                //alert(stepball+"=>"+zball+" / "+zpoke);
+            } else if (yball>-25) {
+                if (Math.abs(zball-zpoke)<=3&&Math.sqrt(Math.pow(xball-xpoke,2)+Math.pow(yball-ypoke,2))<150) {
+                    //alert("Catching...");
+                    stateball=3;
+                }
+            }
+        }
+    } else if (stateball==3) {
+        pokimg.css({borderSpacing:1}).animate({borderSpacing:9},{
+            step: function(now,fx){$(this).css({filter:'brightness('+Math.round(now)+')',width:(35-30*now/fx.end)+'%'});relocatePokemon(xball,yball,zball,true);},
+            complete: function(){stateball=4},
+            duration: 1000
+        });
+        stateball=3.5;
+    } else if (stateball==4) {
+        pokimg.hide();
+        pokeball.css({borderSpacing:0}).animate({borderSpacing:9.5},{
+            step: function(now,fx){$(this).css({transform:'rotate('+Math.round(Math.sin(now)*25)+'deg)'});},
+            complete: function(){if(rand(0,9)==1)stateball=5;else if(rand(0,9)==1)stateball=7;else stateball=4;},
+            easing:'linear',
+            duration: 1000
+        });
+        stateball=4.5;
+    } else if (stateball==5) {
+        alert("Capturado!");
+        stateball=5.5;
+    } else if (stateball==7) {
+        pokeball.hide(100);
+        pokimg.show().css({borderSpacing:9}).animate({borderSpacing:1},{
+            step: function(now,fx){$(this).css({filter:'brightness('+Math.round(now)+')',width:(30*fx.end/now)+'%'});relocatePokemon(xball,yball,zball,true);},
+            complete: function(){fustart();stateball=9;},
+            duration: 1000
+        });
+        stateball=7.5;
+    } else if (stateball==9) {
+        //alert(stepball+"=>"+zball+" / "+zpoke);
+        setTimeout(restartPokeball,2000);
+        stateball=10;
+    }
+}
+
+function restartPokeball() {
+	drine=[];
+	stateball=0;
+    pokeball.show();
+	pokeball.css({top:'85%',left:'40%',width:'auto',height:'15%'});
+	$(".dot").remove();
+    pokimg.show().css({filter:'brightness(1)'});
+}
+
+function relocatePokeball(x,y,z) {
+    xball=x;
+    yball=y;
+    zball=z||rand(7,15);
+    var iwi=parseInt(pokeball.css('width'));
+    var ihe=parseInt(pokeball.css('height'));
+    var nx=viwi/2-iwi/2+x;
+    var ny=vihe/2-ihe/2+y;
+    pokeball.css({top:ny,left:nx,height:Math.round(15-zball/15*15)+"%",zIndex:50-zball});
+}
+
+function relocatePokemon(x,y,z,now) {
+    xpoke=x;
+    ypoke=y;
+    zpoke=z||rand(5,10);
     var iwi=parseInt(pokimg.css('width'));
     var ihe=parseInt(pokimg.css('height'));
-    var nx=wi/2-iwi/2+x;
-    var ny=he/2-ihe/2+y;
-    pokimg.animate({top:ny,left:nx,width:rand(35,50)+"%"},3000);
+    var nx=viwi/2-iwi/2+x;
+    var ny=vihe/2-ihe/2+y;
+    if (!now)
+        pokimg.animate({top:ny,left:nx,width:Math.round(50-zpoke/25*50)+"%",zIndex:50-zpoke},1500);
+    else
+        pokimg.css({top:ny,left:nx});
 }
 
 function rand(ini,fin) {
@@ -79,8 +239,9 @@ function rand(ini,fin) {
         background-color:rgba(255,0,0,0.7);text-align:center;font-size:5vh;font-family:arial;padding:5vh 0;}
 #pokemon {width:100%;height:100%;position:absolute;z-index:10;top:0;left:0;overflow:hidden;
         background-image:url();background-repeat:no-repeat;background-size:cover;background-position:center;}
-#pokimg {position:absolute;top:-40%;left:40%;width:40%;}
-#pokeball {position:absolute;bottom:-2%;left:40%;width:20%;}
+#pokimg {position:absolute;top:-40%;left:40%;width:40%;z-index:50;}
+#pokeball {position:absolute;top:85%;left:37%;width:auto;height:15%;z-index:50}
+.dot {position:absolute;width:2px;height:2px;background:white;}
 </style>
 </head>
 <body>
