@@ -1,0 +1,83 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+<meta name="description" content="Pokémon Dont GO: Welcome">
+<meta name="keywords" content="PokemonGo, pokemon, go, argentina, latinoamerica, misiones, misionero">
+<meta name="author" content="ode2logo | Emiliano Pujol">
+<!--<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>-->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="icon" href="favicon.png">
+<link rel="favicon" href="favicon.png">
+<!--<LINK rel="StyleSheet" href="style.css?ra=1" type="text/css">
+<LINK rel="StyleSheet" href="jquery.alerts.css" type="text/css">
+<LINK rel="StyleSheet" href="jquery.ui.css" type="text/css">-->
+<title>Pokémon Dont Go</title>
+<style>
+* {padding:0px;margin:0px}
+body {background-color:#222}
+#divwelcome {
+    background-color:#dff;
+    background-image:url(https://lh5.ggpht.com/8PODwBXKk4L201m4IO1wifRDfbn4Q1JxNxOzj-5TXPJ85_S-vOqntLi7TsVyeFQM0w4=w300);
+    background-repeat:no-repeat;
+    background-size:30%;
+    background-position: right top;
+    margin: auto;
+    left:0;
+    right:0;
+    top:3%;
+    position:absolute;
+    padding: 3%;
+    width:80%;
+    font-family: fantasy, arial;
+}
+hr { margin:5%; }
+button { margin:5%; font-size:170%; padding: 1vh 3vh; }
+.screenshot { max-width: 100%; width:auto; }
+</style>
+<script>
+document.oncontextmenu=function(ev){ev.preventDefault();ev.stopPropagation();}
+</script>
+</head>
+<body>
+
+<div id='divwelcome'>
+    <h3>Bienvenido!</h3>
+    <a name='top'></a>
+    <p>Antes de continuar, te sugerimos que utilices Mozilla Firefox y habilites GPS/Servicios de Ubicación.</p>
+    <p>Si no lo tienes, puedes descargarlo aquí:</p>
+    <center>
+    <a href='https://play.google.com/store/apps/details?id=org.mozilla.firefox&hl=es_419'>
+        <img src='playstore.png' height='36' alt='Google Play Store'>
+    </a>
+    <a href='https://itunes.apple.com/es/app/navegador-firefox/id989804926?mt=8'>
+        <img src='appstore.png' height='36' alt='App Store'>
+    </a>
+    </center>
+    <hr>
+    <h3>Recorre tu ciudad</h3>
+    <p>Hemos hecho algunos cambios desde la versión original. Ahora no tendrás que correr demasiado para alcanzar a los Pokémon.</p>
+    <a href='screenshot_1.png'><img src='screenshot_1.png' class='screenshot'></a>
+
+    <hr>
+    <h3>Capturado en 3, 2, 1...</h3>
+    <p>También hemos modificado (agregado mejor dicho), el sistema de captura. Antes el Pokémon siempre escapaba (que malo :P).</p>
+    <a href='screenshot_2.png'><img src='screenshot_2.png' class='screenshot'></a>
+
+    <hr>
+    <h3>Si estás preparado</h3>
+    Atrápalos si puedes. Pokémon don't go!
+    <center><button onclick="if(navigator.userAgent.indexOf('Firefox')>=0){location.href='map.html'}else{alert('Por favor, ingresa a través de Mozilla Firefox, de otro modo no lo podrás disfrutar al 101%.');location.href='#top';};">Comenzar!</button></center>
+
+    <hr>
+    <h3>Acerca de PDG</h3>
+    <p>Este proyecto no vá más allá de ser un entretenimiento ocasional, es posible que no vengan futuras mejoras.</p>
+    <p>No se guarda información personal ni se difunde, no obstante el usuario es responsable del uso que le quiera dar.</p>
+    <p>Desarrollado por Emiliano Pujol, <i>ode2logo</i>.</p>
+    <p>Contacto: <a href='mailto:enposadas@gmail.com'>enposadas@gmail.com</a> .</p>
+    <p>GitHub: <a href='https://github.com/ode2logo/pokemondontgo' target='_blank'>PokémonDontGO</a></p>
+</div>
+
+</body>
+</html>
