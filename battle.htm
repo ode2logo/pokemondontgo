@@ -187,6 +187,8 @@ function checkBall() {
             var nom=prompt("Nombre para el Pokémon: ","PokePoke");
             var lso=JSON.parse(localStorage.getItem("lso")||"[]");
             lso.push({rf:ref,nm:nom});
+            localStorage.setItem("lso",JSON.stringify(lso));
+            window.history.back();
         }
     } else if (stateball==7) {
         pokeball.hide(100);
