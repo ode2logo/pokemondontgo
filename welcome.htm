@@ -68,7 +68,10 @@ document.oncontextmenu=function(ev){ev.preventDefault();ev.stopPropagation();}
     <hr>
     <h3>Si estás preparado</h3>
     Atrápalos si puedes. Pokémon don't go!
-    <center><button onclick="if(navigator.userAgent.indexOf('Firefox')>=0){location.href='map.html'}else{alert('Por favor, ingresa a través de Mozilla Firefox, de otro modo no lo podrás disfrutar al 101%.');location.href='#top';};">Comenzar!</button></center>
+    <center>
+        <!--<button onclick="if(navigator.userAgent.indexOf('Firefox')>=0){location.href='map.htm'}else{alert('Por favor, ingresa a través de Mozilla Firefox, de otro modo no lo podrás disfrutar al 101%.');location.href='#top';};">Comenzar!</button>-->
+        <button onclick="if(navigator.userAgent.indexOf('Firefox')>=0||1==1){location.href='map.htm'}else{alert('Por favor, ingresa a través de Mozilla Firefox, de otro modo no lo podrás disfrutar al 101%.');location.href='#top';};">Comenzar!</button>
+    </center>
 
     <hr>
     <h3>Acerca de PDG</h3>
